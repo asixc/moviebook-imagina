@@ -2,9 +2,9 @@
 ## Ejercicio 1
 
 Sobre el proyecto de ejercicios anteriores generar capa:
-* Controladores REST
-* DTO
-* Service
-* Métodos que realicen algún cálculo y lo devuelvan en un DTO (como el ejemplo Benefits de clase)
-* Swagger y anotaciones swagger
+* Controladores REST [**OK**]
+* DTO [**OK**]
+* Service [**OK**]
+* Métodos que realicen algún cálculo y lo devuelvan en un DTO (como el ejemplo Benefits de clase) [**OK**][Mappers]
+* Swagger y anotaciones swagger  [Link Swagger](http://localhost:8080/swagger-ui/) [**OK**]
 

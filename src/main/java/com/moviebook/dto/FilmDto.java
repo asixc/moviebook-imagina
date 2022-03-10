@@ -1,11 +1,13 @@
 package com.moviebook.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.moviebook.domain.FormatType;
 import com.moviebook.entities.Director;
 import com.moviebook.entities.Gender;
 
 import java.time.LocalDateTime;
 import java.time.Year;
+import java.util.Collections;
 import java.util.List;
 
 public class FilmDto {
@@ -26,6 +28,9 @@ public class FilmDto {
     private String movieGroups;
     private Director director;
     private List<Gender> genders;
+
+   // @JsonProperty("user.email")
+    private String owner;
 
     public Long getId() {
         return id;
@@ -156,10 +161,18 @@ public class FilmDto {
     }
 
     public List<Gender> getGenders() {
-        return genders;
+        return Collections.unmodifiableList(genders);
     }
 
     public void setGenders(List<Gender> genders) {
         this.genders = genders;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
     }
 }

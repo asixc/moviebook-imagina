@@ -1,5 +1,7 @@
 package com.moviebook.service.impl;
 
+import com.moviebook.dto.FilmDto;
+import com.moviebook.dto.mapper.FilmMapper;
 import com.moviebook.entities.Film;
 import com.moviebook.entities.Gender;
 import com.moviebook.repository.FilmRepository;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.time.Year;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class FilmServiceImpl implements FilmsService {
@@ -21,37 +24,43 @@ public class FilmServiceImpl implements FilmsService {
     private static final Log log = LogFactory.getLog(FilmServiceImpl.class);
     private final FilmRepository repository;
     private final UserService userService;
+    private final FilmMapper filmMapper;
 
 
-    public FilmServiceImpl(FilmRepository repository, UserService userService) {
+    public FilmServiceImpl(FilmRepository repository, UserService userService, FilmMapper filmMapper) {
         this.repository = repository;
         this.userService = userService;
+        this.filmMapper = filmMapper;
     }
 
     @Override
-    public ResponseEntity<Film> save(Film film) {
-        if (!this.userService.existsById(film.getOwner().getEmail()))
+    public ResponseEntity<FilmDto> save(FilmDto film) {
+        if (!this.userService.existsById(film.getOwner()))
             return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        return ResponseEntity.ok(this.repository.save(film));
+        var filmUpdated = this.repository.save(filmMapper.mapperDtoToFilmEntity(film));
+        return ResponseEntity.ok(this.filmMapper.mapperEntityToFilmDto(filmUpdated));
     }
 
     @Override
-    public ResponseEntity<Film> update(Long id, Film film) {
-        if (!this.userService.existsById(film.getOwner().getEmail())
+    public ResponseEntity<FilmDto> update(Long id, FilmDto film) {
+        if (!this.userService.existsById(film.getOwner())
                 || !this.repository.existsById(id))
             return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         film.setId(id);
-        return ResponseEntity.ok(this.repository.save(film));
+
+        return this.save(film);
     }
 
     @Override
-    public List<Film> saveAll(List<Film> films) {
+    public List<FilmDto> saveAll(List<Film> films) {
         log.info("saving...");
-        return this.repository.saveAll(films);
+        return this.repository.saveAll(films).stream()
+                .map(filmMapper::mapperEntityToFilmDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public ResponseEntity<Film> deleteById(Long id) {
+    public ResponseEntity<FilmDto> deleteById(Long id) {
         if (id == null)
             return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         if (!this.repository.existsById(id)){
@@ -67,8 +76,10 @@ public class FilmServiceImpl implements FilmsService {
     }
 
     @Override
-    public List<Film> findAll() {
-        var films = this.repository.findAll();
+    public List<FilmDto> findAll() {
+        var films = this.repository.findAll().stream()
+                .map(this.filmMapper::mapperEntityToFilmDto)
+                .collect(Collectors.toList());
         return films;
     }
 

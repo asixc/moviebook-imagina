@@ -1,5 +1,6 @@
 package com.moviebook.controller;
 
+import com.moviebook.dto.UserDto;
 import com.moviebook.entities.User;
 import com.moviebook.service.UserService;
 import org.apache.commons.logging.Log;
@@ -23,31 +24,24 @@ public class UserController {
     }
 
     @GetMapping()
-    public List<User> getUsers(){
+    public List<UserDto> getUsers(){
         return this.userService.findAll();
     }
 
     @PostMapping()
-    public ResponseEntity<User> save(@RequestBody User newUser){
-       return  newUser.getEmail().isBlank() || this.userService.existsById(newUser.getEmail())?
-               ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null)
-               : ResponseEntity.ok(this.userService.save(newUser));
+    public ResponseEntity<UserDto> save(@RequestBody UserDto newUser){
+        return this.userService.save(newUser);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> update(@PathVariable String id, @RequestBody User userUpdate){
-        return this.userService.existsById(id) ?
-                ResponseEntity.ok(this.userService.update(id, userUpdate))
-                : ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    public ResponseEntity<UserDto> update(@PathVariable String id, @RequestBody UserDto userUpdate){
+        return this.userService.update(id, userUpdate);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<User> deleteById(@PathVariable String id) {
-        if (!this.userService.existsById(id))
-            return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    public ResponseEntity<UserDto> deleteById(@PathVariable String id) {
+        return this.userService.deleteById(id);
 
-        this.userService.deleteById(id);
-        return ResponseEntity.noContent().build();
     }
 
 }

@@ -1,5 +1,6 @@
 package com.moviebook.service;
 
+import com.moviebook.dto.FilmDto;
 import com.moviebook.entities.Film;
 import com.moviebook.entities.Gender;
 import org.springframework.http.ResponseEntity;
@@ -11,11 +12,11 @@ import java.util.Optional;
 public interface FilmsService {
 
     Optional<Film> findById(Long id);
-    ResponseEntity<Film> save(Film film);
-    ResponseEntity<Film> update(Long id, Film film);
-    List<Film> saveAll(List<Film> film);
-    ResponseEntity<Film> deleteById(Long id);
-    List<Film> findAll();
+    ResponseEntity<FilmDto> save(FilmDto film);
+    ResponseEntity<FilmDto> update(Long id, FilmDto film);
+    List<FilmDto> saveAll(List<Film> film);
+    ResponseEntity<FilmDto> deleteById(Long id);
+    List<FilmDto> findAll();
     List<Film> findByName(String nameFilm);
     List<Film> findAllByDurationOrderByDuration();
     List<Film> findAllForYearAndOrderByYearOfFilm(Year year);

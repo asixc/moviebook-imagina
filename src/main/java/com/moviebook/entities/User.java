@@ -7,6 +7,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Entity
@@ -121,5 +122,13 @@ public class User extends Person {
 
     public RegistrationInformation getRegistration() {
         return registrationInformation;
+    }
+
+    public List<Film> getFilms() {
+        return Collections.unmodifiableList(films);
+    }
+
+    public void setFilms(List<Film> films) {
+        this.films = films;
     }
 }

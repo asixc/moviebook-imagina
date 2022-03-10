@@ -26,36 +26,21 @@ public class FilmController {
     }
 
 
-    /*
-     @GetMapping()public List<FilmDto> findAll() {
-        var listFilm = this.service.findAll();
-        var listDto = new ArrayList<FilmDto>();
-
-        listFilm.forEach(filmEntity ->{
-            var filmDto = new FilmDto();
-            BeanUtils.copyProperties(filmEntity, filmDto);
-            listDto.add(filmDto);
-        });
-
-        log.info(listDto);
-        return listDto;
-    }*/
-
     @GetMapping
-    public List<Film> getFilms() { return this.service.findAll();}
+    public List<FilmDto> getFilms() { return this.service.findAll();}
 
     @PostMapping()
-    public ResponseEntity<Film> save(@RequestBody Film newFilm){
+    public ResponseEntity<FilmDto> save(@RequestBody FilmDto newFilm){
         return this.service.save(newFilm);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Film> update(@PathVariable Long id,@RequestBody Film filmUpdate){
+    public ResponseEntity<FilmDto> update(@PathVariable Long id,@RequestBody FilmDto filmUpdate){
         return this.service.update(id, filmUpdate);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Film> deleteById(@PathVariable Long id) {
+    public ResponseEntity<FilmDto> deleteById(@PathVariable Long id) {
         return this.service.deleteById(id);
     }
 }

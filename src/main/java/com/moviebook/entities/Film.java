@@ -1,5 +1,6 @@
 package com.moviebook.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.moviebook.domain.FormatType;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -68,21 +69,23 @@ public class Film implements Serializable {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "id_user")
+    @JsonIgnore
     private User owner;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable( // opcional, permite configurar la tabla que se va a generar
+
+    /* @JoinTable( opcional, permite configurar la tabla que se va a generar
             name = "films_genders",
             joinColumns = @JoinColumn(name = "film_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "gender_id", referencedColumnName = "gender")
-    )
-    private Set<Gender> genders = new HashSet<>();
+    )*/
+    @ManyToMany(cascade = CascadeType.ALL)
+    private List<Gender> genders = new ArrayList<>();
 
 
     public Film() {}
 
     public Film(String nameFilm, FormatType format, String synopsis, String country, short duration, byte rating, float purchasePrice, Year yearOfFilm,
-                String placeOfPurchase, String producers, String roleDistribution, String movieGroups, Set<Gender> genders, User user, Director director) {
+                String placeOfPurchase, String producers, String roleDistribution, String movieGroups, List<Gender> genders, User user, Director director) {
         this.nameFilm = nameFilm;
         this.format = format;
         this.synopsis = synopsis;
@@ -237,10 +240,10 @@ public class Film implements Serializable {
     }
 
     public List<Gender> getGenders() {
-        return new ArrayList<>(genders);
+        return genders;
     }
 
-    public void setGenders(Set<Gender> genders) {
+    public void setGenders(List<Gender> genders) {
         this.genders = genders;
     }
 
