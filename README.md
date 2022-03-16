@@ -1,10 +1,9 @@
-# Actividad 09-03-2022
-## Ejercicio 1
+# Actividad 10-03-2022
+## # Ejercicio 1
 
-Sobre el proyecto de ejercicios anteriores generar capa:
-* Controladores REST [**OK**]
-* DTO [**OK**]
-* Service [**OK**]
-* Métodos que realicen algún cálculo y lo devuelvan en un DTO (como el ejemplo Benefits de clase) [**OK**][Mappers]
-* Swagger y anotaciones swagger  [Link Swagger](http://localhost:8080/swagger-ui/) [**OK**]
+Sobre proyecto anterior aplicar:
 
+* AOP para logging antes y después de cada método de los servicios [**OK**]
+* AOP para medir el tiempo de ejecución de cada método de los controladores [**OK**]
+* Agregar seguridad básica al proyecto siguiendo una de las 3 opciones planteadas en el proyecto s011  [**OK**]
+  * Se ha deshabilitado csrf para permitir operaciones POST, PUT y Delete
