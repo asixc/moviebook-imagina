@@ -1,37 +1,62 @@
 package com.moviebook.config;
 
+import com.moviebook.security.JwtFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+    @Autowired
+    private UserDetailsService userDetailsService;
+    @Autowired
+    private JwtFilter jwtFilter;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
+    /*
+    Indica a Spring que genere un Bean para la autenticación
+     */
+    @Bean
     @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-                .withUser("user")
-                .password(this.passwordEncoder().encode("admin"))
-                .roles("USER")
-                .and()
-                .passwordEncoder(this.passwordEncoder());
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
+
+    /*
+    Configura el bean de autenticación que generará Spring en el método authenticationManagerBean()
+    La configuración consiste en añadir un UserDetailsService y un PasswordEncoder
+     */
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(this.userDetailsService)
+                .passwordEncoder(this.passwordEncoder);
     }
 
     /*
-    Permitir POST, PUT Y DELETE es necesario deshabilitar csfr o implementar la lógica
+    Permite configurar el tipo de autenticación y el acceso a los recursos/endpoints
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable().authorizeRequests().anyRequest().authenticated().and().httpBasic();
-    }
 
+        http.csrf().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+        http.authorizeRequests()
+                .mvcMatchers("/auth/**").permitAll()
+                .anyRequest()
+                .authenticated();
+
+        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+    }
 }

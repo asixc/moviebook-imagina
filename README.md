@@ -1,9 +1,8 @@
-# Actividad 10-03-2022
-## # Ejercicio 1
+# Actividad 14-03-2022
+### Ejercicio 1
 
-Sobre proyecto anterior aplicar:
+Sobre un proyecto anterior, aplicar seguridad por JWT siguiendo el proceso seguido en clase con Spring Data JPA y la base de datos que se quiera (H2, MySQL, PostgreSQL).
 
-* AOP para logging antes y después de cada método de los servicios [**OK**]
-* AOP para medir el tiempo de ejecución de cada método de los controladores [**OK**]
-* Agregar seguridad básica al proyecto siguiendo una de las 3 opciones planteadas en el proyecto s011  [**OK**]
-  * Se ha deshabilitado csrf para permitir operaciones POST, PUT y Delete
+(Requisito: haber hecho primero en otro proyecto el de Seguridad básica con Spring Data JPA)
+
+Probar también los mvcMatchers y la autorización basada en Authorities (read, write).

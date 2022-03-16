@@ -37,8 +37,8 @@ public class FilmServiceImpl implements FilmsService {
     public ResponseEntity<FilmDto> save(FilmDto film) {
         if (!this.userService.existsById(film.getOwner()))
             return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        var filmUpdated = this.repository.save(filmMapper.mapperDtoToFilmEntity(film));
-        return ResponseEntity.ok(this.filmMapper.mapperEntityToFilmDto(filmUpdated));
+        var filmUpdated = this.repository.save(filmMapper.toEntity(film));
+        return ResponseEntity.ok(this.filmMapper.toDto(filmUpdated));
     }
 
     @Override
@@ -55,7 +55,7 @@ public class FilmServiceImpl implements FilmsService {
     public List<FilmDto> saveAll(List<Film> films) {
         log.info("saving...");
         return this.repository.saveAll(films).stream()
-                .map(filmMapper::mapperEntityToFilmDto)
+                .map(filmMapper::toDto)
                 .collect(Collectors.toList());
     }
 
@@ -78,7 +78,7 @@ public class FilmServiceImpl implements FilmsService {
     @Override
     public List<FilmDto> findAll() {
         var films = this.repository.findAll().stream()
-                .map(this.filmMapper::mapperEntityToFilmDto)
+                .map(this.filmMapper::toDto)
                 .collect(Collectors.toList());
         return films;
     }

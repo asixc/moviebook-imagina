@@ -1,18 +1,31 @@
 package com.moviebook.entities;
 
 import com.moviebook.domain.Role;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+
+@Data
 @Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "users")
-public class User extends Person {
+public class User extends Person implements UserDetails {
 
     @Column(length = 100, unique = true)
     private String nickname;
@@ -27,6 +40,44 @@ public class User extends Person {
     @Column(name = "last_name", length = 100)
     private String lasName;
 
+    private String password;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Enumerated(EnumType.STRING)
+    private List<UserAuthority> authorities = new ArrayList<>();
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return this.authorities.stream()
+                .map(authority -> new SimpleGrantedAuthority(authority.toString()))
+                .toList();
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return false;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return this.enabled;
+    }
+
     @PrePersist
     @PreUpdate
     private void prepareEmail() {
@@ -37,7 +88,7 @@ public class User extends Person {
     @UpdateTimestamp
     private LocalDateTime lastUpdated;
 
-    private boolean activated = false;
+    private boolean enabled = false;
 
    // @Enumerated(EnumType.STRING)
     private Role rol;
@@ -50,85 +101,4 @@ public class User extends Person {
     @JoinColumn(name = "register", unique = true, foreignKey = @ForeignKey(name = "fk_user_registration"))
     private RegistrationInformation registrationInformation;
 
-    public User() {
-    }
-
-    public User(String nickname, String email, String firstName, String lasName, boolean isReferred) {
-        this.nickname = nickname;
-        this.email = email;
-        this.firstName = firstName;
-        this.lasName = lasName;
-        this.activated = false;
-        this.rol = Role.USER;
-        this.registrationInformation = new RegistrationInformation("fake until add dependency", isReferred);
-    }
-
-
-    public String getNickname() {
-        return nickname;
-    }
-
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLasName() {
-        return lasName;
-    }
-
-    public void setLasName(String lasName) {
-        this.lasName = lasName;
-    }
-
-    public boolean isActivated() {
-        return activated;
-    }
-
-    public void setActivated(boolean activated) {
-        this.activated = activated;
-    }
-
-    public Role getRol() {
-        return rol;
-    }
-
-    public void setRol(Role rol) {
-        this.rol = rol;
-    }
-
-    public RegistrationInformation getRegistrationInformation() {
-        return registrationInformation;
-    }
-
-    public void setRegistrationInformation(RegistrationInformation registrationInformation) {
-        this.registrationInformation = registrationInformation;
-    }
-
-    public RegistrationInformation getRegistration() {
-        return registrationInformation;
-    }
-
-    public List<Film> getFilms() {
-        return Collections.unmodifiableList(films);
-    }
-
-    public void setFilms(List<Film> films) {
-        this.films = films;
-    }
 }

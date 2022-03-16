@@ -43,9 +43,9 @@ public class UserServiceImpl implements UserService {
 
         newUser.setActivated(false);
         newUser.setRol(Role.USER);
-        var userSaved = this.userRepository.save(this.userMapper.mapperDtoToFilmEntity(newUser));
+        var userSaved = this.userRepository.save(this.userMapper.toEntity(newUser));
 
-        return ResponseEntity.ok(this.userMapper.mapperEntityToUserDto(userSaved));
+        return ResponseEntity.ok(this.userMapper.toDto(userSaved));
     }
 
     @Override
@@ -55,10 +55,10 @@ public class UserServiceImpl implements UserService {
 
         var lastUser = this.userRepository.getById(userId);
         userToUpdate.setEmail(userId);
-        userToUpdate.setRegistrationInformation(lastUser.getRegistration());
-        var userSaved = this.userRepository.save(this.userMapper.mapperDtoToFilmEntity(userToUpdate));
+        userToUpdate.setRegistrationInformation(lastUser.getRegistrationInformation());
+        var userSaved = this.userRepository.save(this.userMapper.toEntity(userToUpdate));
 
-        return ResponseEntity.ok(this.userMapper.mapperEntityToUserDto(userSaved));
+        return ResponseEntity.ok(this.userMapper.toDto(userSaved));
     }
 
     @Override
@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> findAll() {
-        var users= this.userRepository.findAll().stream().map(userMapper::mapperEntityToUserDto).collect(Collectors.toList());
+        var users= this.userRepository.findAll().stream().map(userMapper::toDto).collect(Collectors.toList());
         return users;
     }
     @Override

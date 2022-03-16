@@ -1,11 +1,20 @@
 package com.moviebook.dto.mapper;
 
 import com.moviebook.dto.FilmDto;
-import com.moviebook.entities.User;
 import com.moviebook.entities.Film;
-import org.springframework.beans.BeanUtils;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
+@Mapper(componentModel = "spring")
+public interface FilmMapper {
+
+    @Mapping(source = "owner.email", target = "owner")
+    FilmDto toDto(Film entity);
+
+    @Mapping(source = "owner", target = "owner.email")
+    Film toEntity(FilmDto dto);
+}
+/* Last
 @Component
 public class FilmMapper {
 
@@ -28,3 +37,4 @@ public class FilmMapper {
         return entity;
     }
 }
+*/
